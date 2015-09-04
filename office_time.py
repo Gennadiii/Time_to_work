@@ -25,11 +25,11 @@ doc = open(direction,'r')
 time_of_coming = int(doc.readline())
 doc.close()
 
-fun_time_int = min_now - time_of_coming - min_spent
-fun_time = str(fun_time_int // 60) + ':' + '0'*(fun_time_int % 60 < 10) + str(fun_time_int % 60)
-
 time_to_leave_int = min_now + time_to_work_int
 time_to_leave = str(time_to_leave_int // 60) + ':' + '0'*(time_to_leave_int % 60 < 10) + str(time_to_leave_int % 60)
+
+fun_time_int = time_to_leave_int - time_of_coming - min_spent - time_to_work_int
+fun_time = str(fun_time_int // 60) + ':' + '0'*(fun_time_int % 60 < 10) + str(fun_time_int % 60)
 
 print('\n\n' + 'Time left to work: ' + time_to_work)
 print('\n\n' + 'Time of fun: ' + fun_time)
