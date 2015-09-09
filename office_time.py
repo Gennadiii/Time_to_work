@@ -5,6 +5,12 @@ import os.path
 direction = os.path.expanduser(r'~\Dropbox\Work\Python\Programms\txt\office_time.txt')
 spent = input('Input time You\'ve already been here: ')
 now = str(datetime.time(datetime.now()))[:5]
+additional_time = 0
+
+if spent[0] == '*':
+	spent = spent[1:]
+	additional_time = int(spent[:spent.find('*')])
+	spent = spent[spent.find('*')+1:]
 
 if spent[-1] == '+':
 	spent = spent[:-1]
@@ -18,7 +24,7 @@ if spent[-1] == '+':
 min_spent = int(spent[-2:]) + int(spent[:-3])*60
 min_now = int(now[-2:]) + int(now[:-3])*60
 
-time_to_work_int = 8*60 - min_spent
+time_to_work_int = 8*60 + additional_time - min_spent
 time_to_work = str(time_to_work_int // 60) + ':' + '0'*(time_to_work_int % 60 < 10) + str(time_to_work_int % 60)
 
 doc = open(direction,'r')
