@@ -1,22 +1,30 @@
 from datetime import datetime
+from time import sleep
 import json
 from selenium import webdriver
 from os.path import expanduser
+from selenium.common.exceptions import InvalidSelectorException
 
 def time2int(time):
 	return int( time[:2] )*60 + int( time[3:] )
+
 def int2time(integer):
 	return str(integer // 60) + ':' + '0'*(integer % 60 < 10) + str(integer % 60)
 
-txt = expanduser(r'~\Dropbox\Work\Python\Programms\txt\office_time_2.txt')
+txt = expanduser(r'~\Dropbox\Work\Python\Programms\txt\office_time.txt')
 current_time_int = time2int( str(datetime.time(datetime.now()))[:5] )
 
 driver = webdriver.Chrome(expanduser(r'~\Dropbox\Work\Python\chromedriver.exe'))
 driver.get('https://portal-ua.globallogic.com/officetime/')
 driver.implicitly_wait(600)
 
-table_view = driver.find_element_by_xpath("//a[contains(text(), 'Table view')]")
-table_view.click()
+for j in range(20):
+	try:
+		table_view = driver.find_element_by_xpath("//a[contains(text(), 'Table view')]")
+		table_view.click()
+		break
+	except InvalidSelectorException:
+		sleep(0.1)
 
 today = str(datetime.now().day) + '.' + str(datetime.now().month) + '.' + str(datetime.now().year)
 yestarday = str(datetime.now().day-1) + '.' + str(datetime.now().month) + '.' + str(datetime.now().year)
@@ -35,8 +43,10 @@ time_of_coming = current_time_int - time_worked
 data = json.load(open(txt, 'r'))
 
 if data['today'] != today:
+	worked_yestarday = time_worked_for(yestarday)
+	print( 'Yestarday worked: ' + int2time(worked_yestarday) )
 	last_additional_time = data['additional_time']
-	additional_time = last_additional_time + ( 8*60 - time_worked_for(yestarday) )
+	additional_time = last_additional_time + ( 8*60 - worked_yestarday )
 	if additional_time < 0: additional_time = 0
 	data = { 'today':today, 'time_of_coming':time_of_coming, 'additional_time':additional_time }
 	json.dump(data, open(txt, 'w'))
@@ -61,4 +71,5 @@ print('\n\n' + 'Time left to work: ' + time_to_work)
 print('\n\n' + 'Time of fun: ' + fun_time)
 print('\n\n' + 'Time to leave: ' + time_to_leave + '\n\n')
 if additional_time != 0: print( '\n\n' + 'Additional_time : ' + str(additional_time) )
+
 input()
