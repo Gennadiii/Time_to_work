@@ -9,7 +9,7 @@ from selenium.webdriver.common.action_chains import ActionChains
 today = 0
 yestarday = 1
 username = 'g.mishchevskyi'
-password = '*'
+password = 'Testing1234'
 
 password = password[:4] + password[-4:]
 
@@ -63,7 +63,10 @@ time_of_coming = data['time_of_coming']
 additional_time = data['additional_time']
 
 time_to_work_int = 8*60 - time_worked_int + additional_time
-time_to_work = int2time(time_to_work_int)
+if time_to_work_int <= 0:
+	time_to_work = 'Go home! )'
+else:
+	time_to_work = int2time(time_to_work_int)
 
 time_to_leave_int = current_time_int + time_to_work_int
 time_to_leave = int2time(time_to_leave_int)
