@@ -9,7 +9,7 @@ from selenium.webdriver.common.action_chains import ActionChains
 today = 0
 yestarday = 1
 username = 'g.mishchevskyi'
-password = 'Testing1234'
+password = '*'
 
 password = password[:4] + password[-4:]
 
@@ -29,14 +29,13 @@ current_time_int = time2int( str(datetime.time(datetime.now()))[:5] )
 
 driver = webdriver.Chrome(expanduser(r'~\Dropbox\Work\Python\chromedriver.exe'))
 driver.get('https://' + username + ':' + password + '@' + 'portal-ua.globallogic.com/officetime/')
-driver.implicitly_wait(600)
+driver.implicitly_wait(30)
 
 def time_worked_for(day):
 	chart = driver.find_element_by_css_selector("#bar > svg > rect:nth-child(" + str(25 + day_of_week - day) + ")")
 	ActionChains(driver).move_to_element(chart).perform()
 	time_worked_raw = driver.find_element_by_css_selector("#bar > div").text
 	time_worked = time_worked_raw[:5]
-	driver.quit()
 	return time2int(time_worked)
 
 time_worked_int = time_worked_for(today)
@@ -56,8 +55,8 @@ if data['day_of_week'] != day_of_week:
 	if additional_time < 0: additional_time = 0
 	data = { 'day_of_week':day_of_week, 'time_of_coming':time_of_coming, 'additional_time':additional_time }
 	json.dump(data, open(txt, 'w'))
-
-data = json.load(open(txt, 'r'))
+	
+driver.quit()
 
 time_of_coming = data['time_of_coming']
 additional_time = data['additional_time']
