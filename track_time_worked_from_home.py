@@ -1,6 +1,5 @@
-from time import sleep
+from my_lib import *
 import json
-from os.path import expanduser
 
 txt = expanduser(r'~\Dropbox\Work\Python\Programms\txt\office_time.txt')
 
