@@ -1,7 +1,6 @@
 from datetime import datetime
 import json
 from selenium import webdriver
-from os.path import expanduser
 from selenium.common.exceptions import InvalidSelectorException
 from selenium.webdriver.common.action_chains import ActionChains
 from my_lib import *
