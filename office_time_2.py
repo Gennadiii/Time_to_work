@@ -71,36 +71,36 @@ data = json_load()
 
 current_time = time2int( str(datetime.time(datetime.now()))[:5] )
 time_worked = time_worked_for(today) - data['fun_time'] + data['worked_from_home']
-time_of_coming = current_time - time_worked
 
 if not entered_first_time_today():
     driver.quit()
 else:
-    if today_is_not_Monday():
-        worked_yestarday = time_worked_for(yestarday)
-        driver.quit()
-        print('Waiting 5 minutes for dropbox to update...')
-        # sleep(5*60)
+	if today_is_not_Monday():
+		worked_yestarday = time_worked_for(yestarday)
+		driver.quit()
+		print('Waiting 5 minutes for dropbox to update...')
+		sleep(5*60)
 
-        worked_yestarday = worked_yestarday + data['worked_from_home'] - data['fun_time']
-        print_time_worked_yestarday()
-        additional_time = data['additional_time'] + ( days_length - worked_yestarday )
-    else:
-        driver.quit()
-        worked_yestarday = days_length
-        additional_time = 0
+		worked_yestarday = worked_yestarday + data['worked_from_home'] - data['fun_time']
+		print_time_worked_yestarday()
+		additional_time = data['additional_time'] + ( days_length - worked_yestarday )
+	else:
+		driver.quit()
+		worked_yestarday = days_length
+		additional_time = 0
 
-    data['additional_time'] = days_length - worked_yestarday
-    data['worked_from_home'] = 0
-    data['day_of_week'] = day_of_week
-    data['fun_time'] = 0
-    json_dump()
+	data['time_of_coming'] = current_time - time_worked
+	data['additional_time'] = days_length - worked_yestarday
+	data['worked_from_home'] = 0
+	data['day_of_week'] = day_of_week
+	data['fun_time'] = 0
+	json_dump()
 
 time_to_work = days_length - time_worked + data['additional_time']
 
 time_to_leave = current_time + time_to_work
 
-fun_time = time_to_leave - time_of_coming - time_worked - time_to_work
+fun_time = time_to_leave - data['time_of_coming'] - time_worked - time_to_work
 
 print_time_worked()
 print_time_to_work(time_to_work)
