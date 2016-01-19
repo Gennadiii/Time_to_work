@@ -12,7 +12,7 @@ if len(false_alarm) != 0:
 	print('Fun time is rolled back')
 	sleep(1)
 else:
-	fun_time = -3
+	fun_time = data['fun_time'] - 3
 	while True:
 		print( str(fun_time) + '\n' )
 		sleep(3)
