@@ -35,6 +35,7 @@ def time_worked_for(day):
     ActionChains(driver).move_to_element(chart).perform()
     time_worked_raw = driver.find_element_by_css_selector("#bar > div").text
     time_worked = time_worked_raw[:5]
+    log(time_worked)
     return time2int(time_worked)
 
 def entered_first_time_today():
@@ -70,10 +71,11 @@ def print_additional_time():
 data = json_load()
 
 current_time = time2int( str(datetime.time(datetime.now()))[:5] )
-time_worked = time_worked_for(today) - data['fun_time'] + data['worked_from_home']
+time_worked = time_worked_for(today)
 
 if not entered_first_time_today():
-    driver.quit()
+	time_worked = time_worked - data['fun_time'] + data['worked_from_home']
+	driver.quit()
 else:
 	if today_is_not_Monday():
 		worked_yestarday = time_worked_for(yestarday)
@@ -81,16 +83,15 @@ else:
 		print('Waiting 5 minutes for dropbox to update...')
 		sleep(5*60)
 
-		worked_yestarday = worked_yestarday + data['worked_from_home'] - data['fun_time']
+		worked_yestarday += data['worked_from_home'] - data['fun_time']
 		print_time_worked_yestarday()
-		additional_time = data['additional_time'] + ( days_length - worked_yestarday )
+		data['additional_time'] += days_length - worked_yestarday
 	else:
 		driver.quit()
+		data['additional_time'] = 0
 		worked_yestarday = days_length
-		additional_time = 0
 
 	data['time_of_coming'] = current_time - time_worked
-	data['additional_time'] = days_length - worked_yestarday
 	data['worked_from_home'] = 0
 	data['day_of_week'] = day_of_week
 	data['fun_time'] = 0
