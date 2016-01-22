@@ -109,7 +109,7 @@ time_to_leave = current_time + time_to_work
 
 fun_time = time_to_leave - data['time_of_coming'] - time_worked - time_to_work
 
-gl_time = (day_of_week+1)*days_length - data['gl_time'] - time_worked
+gl_time = (day_of_week+1)*days_length - data['gl_time'] - time_worked - data['fun_time']
 
 print_time_worked()
 print_time_to_work(time_to_work)
