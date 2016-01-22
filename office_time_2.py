@@ -1,3 +1,4 @@
+import shutil
 from datetime import datetime
 import json
 from selenium import webdriver
@@ -10,11 +11,11 @@ day_of_week = datetime.weekday(now)
 
 today = 0
 yestarday = 1
-username = '*'
-password = '*'
+
 days_length = 8*60
 
 txt = expanduser(r'~\Dropbox\Work\Python\Programms\txt\office_time.txt')
+txt_backup = expanduser(r'~\Dropbox\Work\Python\Programms\txt\office_time_backup.txt')
 
 driver = webdriver.Chrome(expanduser(r'~\Dropbox\Work\Python\chromedriver.exe'))
 driver.get('https://' + username + ':' + password + '@' + 'portal-ua.globallogic.com/officetime/')
@@ -33,6 +34,7 @@ def int2time(integer):
 def time_worked_for(day):
     chart = driver.find_element_by_css_selector("#bar > svg > rect:nth-child(" + str(25 + day_of_week - day) + ")")
     ActionChains(driver).move_to_element(chart).perform()
+    sleep(0.5)
     time_worked_raw = driver.find_element_by_css_selector("#bar > div").text
     time_worked = time_worked_raw[:5]
     log(time_worked)
@@ -44,7 +46,7 @@ def entered_first_time_today():
 def json_load():
     return json.load(open(txt, 'r'))
 
-def json_dump():
+def json_dump(txt=txt):
     json.dump(data, open(txt, 'w'))
 
 def today_is_not_Monday():
@@ -67,6 +69,9 @@ def print_time_to_leave():
 
 def print_additional_time():
     print('\n\n' + 'Additional time: ' + int2time(data['additional_time']))
+
+def print_gl_time():
+	print('\n\n\n\n\n\n\n\n' + 'GL tracked time: ' + int2time(gl_time))
     
 data = json_load()
 
@@ -77,11 +82,11 @@ if not entered_first_time_today():
 	time_worked = time_worked - data['fun_time'] + data['worked_from_home']
 	driver.quit()
 else:
+	json_dump(txt_backup)
 	if today_is_not_Monday():
 		worked_yestarday = time_worked_for(yestarday)
 		driver.quit()
-		print('Waiting 5 minutes for dropbox to update...')
-		sleep(5*60)
+		input('Press enter when dropbox is updated.')
 
 		worked_yestarday += data['worked_from_home'] - data['fun_time']
 		print_time_worked_yestarday()
@@ -90,6 +95,7 @@ else:
 		driver.quit()
 		data['additional_time'] = 0
 		worked_yestarday = days_length
+		data['gl_time'] = 0
 
 	data['time_of_coming'] = current_time - time_worked
 	data['worked_from_home'] = 0
@@ -103,11 +109,14 @@ time_to_leave = current_time + time_to_work
 
 fun_time = time_to_leave - data['time_of_coming'] - time_worked - time_to_work
 
+gl_time = (day_of_week+1)*days_length - data['gl_time'] - time_worked
+
 print_time_worked()
 print_time_to_work(time_to_work)
 print_fun_time()
 print_time_to_leave()
 print_additional_time()
+print_gl_time()
 
 add_time = input()
 
