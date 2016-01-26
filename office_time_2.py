@@ -11,7 +11,8 @@ day_of_week = datetime.weekday(now)
 
 today = 0
 yestarday = 1
-
+username = '*'
+password = '*'
 days_length = 8*60
 
 txt = expanduser(r'~\Dropbox\Work\Python\Programms\txt\office_time.txt')
@@ -82,12 +83,13 @@ if not entered_first_time_today():
 	time_worked = time_worked - data['fun_time'] + data['worked_from_home']
 	driver.quit()
 else:
-	json_dump(txt_backup)
 	if today_is_not_Monday():
 		worked_yestarday = time_worked_for(yestarday)
 		driver.quit()
 		input('Press enter when dropbox is updated.')
+		json_dump(txt_backup)
 
+		data['gl_time'] = worked_yestarday
 		worked_yestarday += data['worked_from_home'] - data['fun_time']
 		print_time_worked_yestarday()
 		data['additional_time'] += days_length - worked_yestarday
