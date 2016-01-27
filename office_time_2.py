@@ -87,9 +87,10 @@ else:
 		worked_yestarday = time_worked_for(yestarday)
 		driver.quit()
 		input('Press enter when dropbox is updated.')
+		data = json_load()
 		json_dump(txt_backup)
 
-		data['gl_time'] = worked_yestarday
+		data['gl_time'] += worked_yestarday
 		worked_yestarday += data['worked_from_home'] - data['fun_time']
 		print_time_worked_yestarday()
 		data['additional_time'] += days_length - worked_yestarday
