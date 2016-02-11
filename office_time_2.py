@@ -73,6 +73,9 @@ def print_additional_time():
 
 def print_gl_time():
 	print('\n\n\n\n\n\n\n\n' + 'GL tracked time: ' + int2time(gl_time))
+
+def process_spent_for_email(spent_for_emails):
+	return 0 if len(spent_for_emails) == 0 else int(spent_for_emails)
     
 data = json_load()
 
@@ -86,7 +89,8 @@ else:
 	if today_is_not_Monday():
 		worked_yestarday = time_worked_for(yestarday)
 		driver.quit()
-		input('Press enter when dropbox is updated.')
+		spent_for_emails = input( 'Wait for dropbox to update and input time spent for emails: ' )
+		spent_for_emails = process_spent_for_email(spent_for_emails)
 		data = json_load()
 		json_dump(txt_backup)
 
@@ -96,10 +100,13 @@ else:
 		data['additional_time'] += days_length - worked_yestarday
 	else:
 		driver.quit()
+		spent_for_emails = int( input( 'Input time spent for emails: ' ) )
+		spent_for_emails = process_spent_for_email(spent_for_emails)
 		data['additional_time'] = 0
 		worked_yestarday = days_length
 		data['gl_time'] = 0
 
+	time_worked += spent_for_emails
 	data['time_of_coming'] = current_time - time_worked
 	data['worked_from_home'] = 0
 	data['day_of_week'] = day_of_week
