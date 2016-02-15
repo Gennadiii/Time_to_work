@@ -100,7 +100,7 @@ else:
 		data['additional_time'] += days_length - worked_yestarday
 	else:
 		driver.quit()
-		spent_for_emails = int( input( 'Input time spent for emails: ' ) )
+		spent_for_emails = input( 'Input time spent for emails: ' )
 		spent_for_emails = process_spent_for_email(spent_for_emails)
 		data['additional_time'] = 0
 		worked_yestarday = days_length
