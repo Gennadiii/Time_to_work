@@ -37,8 +37,11 @@ def time_worked_for(day):
     ActionChains(driver).move_to_element(chart).perform()
     sleep(0.5)
     time_worked_raw = driver.find_element_by_css_selector("#bar > div").text
+    while ':' not in time_worked_raw:
+    	sleep(0.5)
+    	time_worked_raw = driver.find_element_by_css_selector("#bar > div").text
+    	print('Can\'t get the time \n')
     time_worked = time_worked_raw[:5]
-    log(time_worked)
     return time2int(time_worked)
 
 def entered_first_time_today():
@@ -90,10 +93,10 @@ else:
 		worked_yestarday = time_worked_for(yestarday)
 		driver.quit()
 		spent_for_emails = input( 'Wait for dropbox to update and input time spent for emails: ' )
-		spent_for_emails = process_spent_for_email(spent_for_emails)
 		data = json_load()
 		json_dump(txt_backup)
 
+		data['spent_for_emails'] = process_spent_for_email(spent_for_emails)
 		data['gl_time'] += worked_yestarday
 		worked_yestarday += data['worked_from_home'] - data['fun_time']
 		print_time_worked_yestarday()
@@ -101,17 +104,18 @@ else:
 	else:
 		driver.quit()
 		spent_for_emails = input( 'Input time spent for emails: ' )
-		spent_for_emails = process_spent_for_email(spent_for_emails)
+		data['spent_for_emails'] = process_spent_for_email(spent_for_emails)
 		data['additional_time'] = 0
 		worked_yestarday = days_length
 		data['gl_time'] = 0
 
-	time_worked += spent_for_emails
 	data['time_of_coming'] = current_time - time_worked
 	data['worked_from_home'] = 0
 	data['day_of_week'] = day_of_week
 	data['fun_time'] = 0
 	json_dump()
+
+time_worked += data['spent_for_emails']
 
 time_to_work = days_length - time_worked + data['additional_time']
 
