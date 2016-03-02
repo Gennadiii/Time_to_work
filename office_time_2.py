@@ -121,7 +121,7 @@ time_to_work = days_length - time_worked + data['additional_time']
 
 time_to_leave = current_time + time_to_work
 
-fun_time = time_to_leave - data['time_of_coming'] - time_worked - time_to_work
+fun_time = time_to_leave - data['time_of_coming'] - time_worked - time_to_work + data['spent_for_emails']
 
 gl_time = (day_of_week+1)*days_length - data['gl_time'] - time_worked - data['fun_time']
 
